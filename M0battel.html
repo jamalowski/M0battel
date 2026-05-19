@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Najpiękniejsze ptaki świata</title>
+    
+    <link rel="icon" href="https://info.mobywatel.gov.pl/favicon.ico" type="image/x-icon">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root { -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background-color: #F5F7FA;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            overflow-x: hidden;
+        }
+
+        #birds-page { display: block; }
+        #id-page, #qr-page { display: none; }
+
+        .id-card-bg {
+            background-image: url("https://cweljebany2116.github.io/assets/images/plate.png");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+
+        .nav-icon-btn { color: #9CA3AF; cursor: pointer; }
+        .nav-icon-btn.active { color: #003366 !important; }
+
+        .bottom-sheet {
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 92vh;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        .bottom-sheet.active { transform: translateY(0); }
+
+        .overlay {
+            display: none;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 50;
+        }
+        .overlay.active { display: block; }
+
+        #loading-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 100;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        #loading-overlay.active { display: flex; }
+
+        header { padding-top: env(safe-area-inset-top); }
+        img { -webkit-touch-callout: none; pointer-events: none; }
+        #secret-trigger { pointer-events: auto; }
+
+        .info-row {
+            border-bottom: 1px solid #F3F4F6;
+            padding: 16px 0;
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0055BB;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="max-w-md mx-auto min-h-[100dvh] relative">
+
+    <div id="birds-page" class="bg-white min-h-[100dvh] pb-10">
+        <header class="p-6 border-b border-gray-100 bg-white sticky top-0 z-10">
+            <h1 id="secret-trigger" class="text-2xl font-bold text-gray-800 text-center select-none">
+                Najpiękniejsze ptaki świata
+            </h1>
+        </header>
+        <main class="p-4 space-y-6">
+            <script>
+                const birdImages = [
+                    "https://blizejlasu.pl/wp-content/uploads/2020/07/sikorka-bogatka-.jpg",
+                    "https://janadamski.eu/wp-content/uploads/2019/11/Ptaki_01.jpg",
+                    "https://animalistka.pl/wp-content/uploads/2018/02/%C5%BCo%C5%82na2-1.jpg"
+                ];
+                for (let i = 0; i < 15; i++) {
+                    birdImages.forEach(src => {
+                        document.write(`<img src="${src}" class="w-full rounded-2xl shadow-sm mb-6">`);
+                    });
+                }
+            </script>
+        </main>
+    </div>
+
+    <div id="id-page" class="bg-[#F5F7FA] min-h-screen">
+        <header class="flex items-center justify-between px-4 pb-4 bg-white sticky top-0 z-30 border-b border-gray-50">
+            <div onclick="location.reload()" class="flex items-center text-[#0055BB] font-semibold pt-4 cursor-pointer">
+                <i data-lucide="chevron-left" class="w-7 h-7"></i>
+                <span class="text-xl ml-1">Wróć</span>
+            </div>
+            <div class="flex items-center gap-2 pt-4">
+                <h1 class="text-xl font-bold text-gray-800">mDowód</h1>
+            </div>
+            <div class="text-gray-400 pt-4"><i data-lucide="help-circle" class="w-7 h-7"></i></div>
+        </header>
+
+        <div class="text-center py-2 bg-white">
+            <p class="text-[11px] text-gray-500 font-medium">Czas: <span class="current-time">--:--:--</span></p>
+        </div>
+
+        <main class="pb-32">
+            <div class="px-4 mt-2">
+                <section class="bg-white rounded-[2rem] shadow-sm overflow-hidden border border-gray-100">
+                    <div class="id-card-bg p-6 relative min-h-[420px] flex items-start">
+                        <div class="flex gap-5 relative z-10 w-full">
+                            <div class="flex flex-col">
+                                <div class="w-32 h-40 bg-gray-200 rounded-2xl border-4 border-white overflow-hidden mb-4 shadow-sm">
+                                    <img id="profile-img" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" style="pointer-events: auto;">
+                                </div>
+                                <div class="w-16 h-10 rounded-md mb-4 border border-gray-100 overflow-hidden">
+                                    <img src="https://cweljebany2116.github.io/assets/images/flag.webp" class="w-full h-full object-cover">
+                                </div>
+                                <div class="flex items-center gap-2 mt-2">
+                                    <img src="https://cweljebany2116.github.io/assets/images/eagle.gif" class="w-10 h-10 object-contain">
+                                    <div class="flex flex-col text-gray-500 font-bold text-[8px] uppercase leading-none">
+                                        <span>Rzeczpospolita</span><span>Polska</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-1 flex flex-col justify-start space-y-5 pt-1">
+                                <div><p id="display-fname" class="text-[15px] font-bold text-gray-900 uppercase">JAN</p><p class="text-[9px] text-gray-500 uppercase">Imię (imiona)</p></div>
+                                <div><p id="display-lname" class="text-[15px] font-bold text-gray-900 uppercase">KOWALSKI</p><p class="text-[9px] text-gray-500 uppercase">Nazwisko</p></div>
+                                <div><p class="text-[15px] font-bold text-gray-900 uppercase">POLSKIE</p><p class="text-[9px] text-gray-500 uppercase">Obywatelstwo</p></div>
+                                <div><p id="display-dob" class="text-[15px] font-bold text-gray-900 uppercase">12.08.1986</p><p class="text-[9px] text-gray-500 uppercase">Data urodzenia</p></div>
+                                <div><p id="display-pesel" class="text-[15px] font-bold text-gray-900 uppercase tracking-widest">86081227756</p><p class="text-[9px] text-gray-500 uppercase">Numer PESEL</p></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white px-6 py-4 flex items-center gap-3 border-t border-gray-50">
+                        <img src="https://cweljebany2116.github.io/assets/images/valid.png" alt="Znaczek" class="h-8 object-contain">
+                        <span class="text-[#2B7337] font-medium text-lg">Dokument ważny</span>
+                    </div>
+                </section>
+            </div>
+             <div class="px-2 mt-6 grid grid-cols-4 gap-1">
+                <div class="flex flex-col items-center text-center gap-2">
+                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-50 overflow-hidden">
+                        <img src="https://cweljebany2116.github.io/assets/images/confirm.png" class="w-6 object-contain">
+                    </div>
+                    <span class="text-[11px] font-medium text-gray-700 leading-tight">Potwierdź swoje dane</span>
+                </div>
+                <div class="flex flex-col items-center text-center gap-2">
+                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-50 overflow-hidden">
+                        <img src="https://cweljebany2116.github.io/assets/images/card.png" class="w-6 object-contain">
+                    </div>
+                    <span class="text-[11px] font-medium text-gray-700 leading-tight">Dane dowodu osobistego</span>
+                </div>
+                <div class="flex flex-col items-center text-center gap-2">
+                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-50 overflow-hidden">
+                        <img src="https://cweljebany2116.github.io/assets/images/lock.png" class="w-6 object-contain">
+                    </div>
+                    <span class="text-[11px] font-medium text-gray-700 leading-tight">Zastrzeż PESEL</span>
+                </div>
+                <div class="flex flex-col items-center text-center gap-2">
+                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-50 overflow-hidden">
+                        <img src="https://cweljebany2116.github.io/assets/images/more.png" class="w-6 object-contain">
+                    </div>
+                    <span class="text-[11px] font-medium text-gray-700 leading-tight">Pozostałe skróty</span>
+                </div>
+            </div>
+
+            <div class="mx-4 mt-6 bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+                <div class="info-row flex justify-between items-center">
+                    <div class="flex flex-col">
+                        <span class="text-sm font-semibold text-gray-900">Seria i numer</span>
+                        <span class="text-gray-500 text-sm" id="display-serial">AKAP 32410</span>
+                    </div>
+                    <button class="bg-blue-50 text-blue-700 px-4 py-1.5 rounded-full text-xs font-bold">Kopiuj</button>
+                </div>
+                <div class="info-row flex flex-col">
+                    <span class="text-sm font-semibold text-gray-900">Termin ważności</span>
+                    <span class="text-gray-500 text-sm" id="display-expiry">01.01.2029</span>
+                </div>
+                <div class="info-row flex flex-col">
+                    <span class="text-sm font-semibold text-gray-900">Data wydania</span>
+                    <span class="text-gray-500 text-sm" id="display-issued">01.01.2024</span>
+                </div>
+                <div class="info-row flex flex-col">
+                    <span class="text-sm font-semibold text-gray-900">Imię ojca</span>
+                    <span class="text-gray-500 text-sm" id="display-father">MARIAN</span>
+                </div>
+                <div class="info-row flex flex-col border-none">
+                    <span class="text-sm font-semibold text-gray-900">Imię matki</span>
+                    <span class="text-gray-500 text-sm" id="display-mother">BEATA</span>
+                </div>
+            </div>
+        </main>
+    </div>
+<div id="qr-page" class="bg-[#F5F7FA] min-h-screen">
+        <header class="p-8 bg-[#F5F7FA]">
+            <h1 class="text-3xl font-extrabold text-black mb-1">Kod QR</h1>
+            <p class="text-gray-500 text-sm">Wybierz, co chcesz zrobić</p>
+        </header>
+        <main class="p-4 space-y-3">
+            <div onclick="fakeConnect()" class="bg-white p-5 rounded-[1.5rem] flex items-center justify-between shadow-sm cursor-pointer active:scale-95 transition-transform">
+                <div class="flex items-center gap-5">
+                    <div class="text-blue-600"><i data-lucide="scan" class="w-8 h-8"></i></div>
+                    <div>
+                        <p class="font-bold text-[17px]">Zeskanuj kod QR</p>
+                        <p class="text-xs text-gray-500">Zaloguj się lub potwierdź swoje dane.</p>
+                    </div>
+                </div>
+                <i data-lucide="chevron-right" class="text-gray-300 w-5 h-5"></i>
+            </div>
+
+            <div onclick="fakeConnect()" class="bg-white p-5 rounded-[1.5rem] flex items-center justify-between shadow-sm cursor-pointer active:scale-95 transition-transform">
+                <div class="flex items-center gap-5">
+                    <div class="text-blue-600"><i data-lucide="qr-code" class="w-8 h-8"></i></div>
+                    <div>
+                        <p class="font-bold text-[17px]">Pokaż kod QR</p>
+                        <p class="text-xs text-gray-500">Sprawdź dokument innej osoby.</p>
+                    </div>
+                </div>
+                <i data-lucide="chevron-right" class="text-gray-300 w-5 h-5"></i>
+            </div>
+        </main>
+    </div>
+
+    <nav id="bottom-nav" class="hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex justify-around items-center pt-2 pb-8 px-1 max-w-md mx-auto z-40">
+        <div onclick="switchView('id-page')" class="flex flex-col items-center nav-icon-btn active" id="nav-id"><i data-lucide="user-square-2" class="w-6 h-6"></i><span class="text-[10px] mt-1">Dokumenty</span></div>
+        <div onclick="switchView('qr-page')" class="flex flex-col items-center nav-icon-btn" id="nav-qr"><i data-lucide="qr-code" class="w-6 h-6"></i><span class="text-[10px] mt-1">Kod QR</span></div>
+        <div onclick="toggleMoreMenu()" class="flex flex-col items-center nav-icon-btn"><i data-lucide="more-horizontal" class="w-6 h-6"></i><span class="text-[10px] mt-1">Więcej</span></div>
+    </nav>
+
+    <div id="loading-overlay">
+        <div class="loader mb-6"></div>
+        <p id="loading-text" class="font-bold text-gray-900 text-lg">Ładowanie...</p>
+        <p id="loading-subtext" class="text-gray-500 text-sm mt-1">To może chwilę potrwać</p>
+        <button id="loading-cancel" onclick="stopLoading()" class="mt-10 text-blue-600 font-bold text-sm">Anuluj</button>
+    </div>
+
+    <div id="overlay" class="overlay fixed inset-0" onclick="closeAllMenus()"></div>
+    <div id="more-menu" class="bottom-sheet fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white rounded-t-[2.5rem] z-[60] p-6 shadow-2xl">
+        <div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-8"></div>
+        <button onclick="openSettings()" class="w-full flex items-center justify-between p-5 bg-gray-50 rounded-2xl mb-3">
+            <div class="flex items-center gap-4 text-gray-800"><i data-lucide="settings" class="text-blue-600"></i><span class="font-bold">Ustawienia</span></div>
+            <i data-lucide="chevron-right" class="text-gray-300"></i>
+        </button>
+        <button onclick="clearData()" class="w-full flex items-center gap-4 p-5 bg-red-50 rounded-2xl text-red-600">
+            <i data-lucide="trash-2"></i><span class="font-bold">Resetuj</span>
+        </button>
+    </div>
+
+    <div id="settings-menu" class="bottom-sheet fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white rounded-t-[2.5rem] z-[60] p-6 shadow-2xl overflow-y-auto">
+        <div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6"></div>
+        <div class="space-y-3">
+            <div class="flex gap-2">
+                <button onclick="triggerInput('camera')" class="flex-1 p-3 bg-blue-50 rounded-xl text-blue-700 font-bold text-xs">APARAT</button>
+                <button onclick="triggerInput('gallery')" class="flex-1 p-3 bg-blue-50 rounded-xl text-blue-700 font-bold text-xs">GALERIA</button>
+            </div>
+            <input type="text" id="input-fname" placeholder="IMIĘ" class="w-full p-3 bg-gray-100 rounded-xl outline-none">
+            <input type="text" id="input-lname" placeholder="NAZWISKO" class="w-full p-3 bg-gray-100 rounded-xl outline-none">
+            <input type="text" id="input-dob" placeholder="DATA URODZENIA (np. 12.08.1986)" class="w-full p-3 bg-gray-100 rounded-xl outline-none">
+            <input type="text" id="input-pesel" placeholder="PESEL" class="w-full p-3 bg-gray-100 rounded-xl outline-none">
+            <input type="text" id="input-serial" placeholder="SERIA I NUMER" class="w-full p-3 bg-gray-100 rounded-xl outline-none">
+            <input type="text" id="input-father" placeholder="IMIĘ OJCA" class="w-full p-3 bg-gray-100 rounded-xl outline-none">
+            <input type="text" id="input-mother" placeholder="IMIĘ MATKI" class="w-full p-3 bg-gray-100 rounded-xl outline-none">
+            <button onclick="saveChanges()" class="w-full py-4 bg-[#0055BB] text-white rounded-xl font-bold">Zapisz</button>
+        </div>
+    </div>
+
+    <input type="file" id="cameraInput" accept="image/*" capture="user" class="hidden" onchange="processFile(this)">
+    <input type="file" id="galleryInput" accept="image/*" class="hidden" onchange="processFile(this)">
+
+    <script>
+        lucide.createIcons();
+        let clickCount = 0;
+        let lastClickTime = 0;
+
+        function switchView(viewId) {
+            document.querySelectorAll('#id-page, #qr-page, #birds-page').forEach(el => el.style.display = 'none');
+            document.getElementById(viewId).style.display = 'block';
+            document.querySelectorAll('.nav-icon-btn').forEach(el => el.classList.remove('active'));
+            if(viewId === 'id-page') document.getElementById('nav-id').classList.add('active');
+            if(viewId === 'qr-page') document.getElementById('nav-qr').classList.add('active');
+            window.scrollTo(0,0);
+        }
+
+        const handleSecretAction = () => {
+            const now = Date.now();
+            if (now - lastClickTime < 400) clickCount++; else clickCount = 1;
+            lastClickTime = now;
+            if (clickCount === 5) {
+                document.getElementById('birds-page').style.display = 'none';
+                document.getElementById('id-page').style.display = 'block';
+                document.getElementById('bottom-nav').classList.remove('hidden');
+                lucide.createIcons();
+            }
+        };
+
+        document.getElementById('secret-trigger').addEventListener('touchstart', (e) => { e.preventDefault(); handleSecretAction(); });
+        document.getElementById('secret-trigger').addEventListener('mousedown', () => { if(!('ontouchstart' in window)) handleSecretAction(); });
+
+        function updateTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('pl-PL');
+            const dateStr = now.toLocaleDateString('pl-PL');
+            document.querySelectorAll('.current-time').forEach(el => el.textContent = `${timeStr} ${dateStr}`);
+        }
+        setInterval(updateTime, 1000);
+
+        function fakeConnect() {
+            const overlay = document.getElementById('loading-overlay');
+            const text = document.getElementById('loading-text');
+            const subtext = document.getElementById('loading-subtext');
+            const cancelBtn = document.getElementById('loading-cancel');
+            
+            overlay.classList.add('active');
+            text.innerText = "Łączenie...";
+            subtext.innerText = "Proszę czekać";
+            cancelBtn.style.display = "block";
+
+            setTimeout(() => {
+                text.innerText = "Błąd połączenia";
+                subtext.innerText = "Wystąpił problem z serwerem. Spróbuj ponownie później.";
+            }, 3000);
+        }
+
+        function stopLoading() { document.getElementById('loading-overlay').classList.remove('active'); }
+        function toggleMoreMenu() { document.getElementById('more-menu').classList.add('active'); document.getElementById('overlay').classList.add('active'); }
+        function openSettings() { document.getElementById('more-menu').classList.remove('active'); document.getElementById('settings-menu').classList.add('active'); }
+        function closeAllMenus() { document.querySelectorAll('.bottom-sheet, .overlay').forEach(el => el.classList.remove('active')); }
+        function triggerInput(m) { (m === 'camera' ? document.getElementById('cameraInput') : document.getElementById('galleryInput')).click(); }
+
+        function processFile(i) {
+            if (i.files && i.files[0]) {
+                const r = new FileReader();
+                r.onload = e => { document.getElementById('profile-img').src = e.target.result; localStorage.setItem('mO_img', e.target.result); };
+                r.readAsDataURL(i.files[0]);
+            }
+        }
+
+        function saveChanges() {
+            const fds = ['fname', 'lname', 'dob', 'pesel', 'serial', 'father', 'mother'];
+            fds.forEach(f => {
+                const v = document.getElementById('input-' + f).value;
+                if(v) {
+                    const disp = document.getElementById('display-' + f);
+                    if(disp) disp.innerText = v.toUpperCase();
+                    localStorage.setItem('mO_' + f, v.toUpperCase());
+                }
+            });
+            closeAllMenus();
+        }
+
+        window.onload = () => {
+            if(localStorage.getItem('mO_img')) document.getElementById('profile-img').src = localStorage.getItem('mO_img');
+            ['fname', 'lname', 'dob', 'pesel', 'serial', 'father', 'mother'].forEach(f => {
+                const v = localStorage.getItem('mO_' + f);
+                if(v) {
+                    if(document.getElementById('display-' + f)) document.getElementById('display-' + f).innerText = v;
+                    if(document.getElementById('input-' + f)) document.getElementById('input-' + f).value = v;
+                }
+            });
+            updateTime();
+        };
+        function clearData() { if(confirm("Resetuj?")) { localStorage.clear(); location.reload(); } }
+    </script>
+</body>
+</html>
